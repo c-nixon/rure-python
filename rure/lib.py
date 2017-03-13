@@ -2,7 +2,7 @@ import os
 import sys
 from collections import namedtuple
 
-from rure._ffi import ffi
+from rure import _ffi
 from rure import exceptions
 from rure.decorators import accepts_bytes
 
@@ -33,8 +33,12 @@ def find_library():
     cur_dir = os.path.dirname(__file__)
     return os.path.join(cur_dir, "{}{}.{}".format(prefix, libname, suffix))
 
+ffi = _ffi.ffi
 
-_lib = ffi.dlopen(find_library())
+if hasattr(_ffi, "lib"):
+    _lib = _ffi.lib
+else:
+    _lib = ffi.dlopen(find_library())
 
 
 def checked_call(fn, err, *args):
